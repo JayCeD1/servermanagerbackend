@@ -10,10 +10,11 @@ import io.smallrye.mutiny.unchecked.Unchecked;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriInfo;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.List;
 
 @ApplicationScoped
@@ -21,6 +22,9 @@ public class ServerService {
 
     @Inject
     ServerRepo serverRepo;
+
+    @Inject
+    UriInfo uriInfo;
 
     public Uni<Server> create(Server server){
         return Panache.withTransaction(() -> {
@@ -82,5 +86,10 @@ public class ServerService {
 
     public Uni<Boolean> delete(Long id){
         return serverRepo.deleteById(id);
+    }
+
+    private String getVerificationUrl(String key, String type){
+        UriBuilder builder = uriInfo.getAbsolutePathBuilder();
+        return builder.path("user/verify/" + type + "/" + key).toString();
     }
 }
