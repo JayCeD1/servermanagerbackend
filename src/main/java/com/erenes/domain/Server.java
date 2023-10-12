@@ -23,7 +23,7 @@ public class Server extends PanacheEntity {
     public String type;
 
     @Column
-    public String imageUrl;
+    public String imageUrl = "https://www.svgrepo.com/show/138007/server-check.svg";
 
     @Column
     public Status status;
