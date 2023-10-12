@@ -3,6 +3,7 @@ package com.erenes.resource;
 import com.erenes.domain.Server;
 import com.erenes.generals.HttpResponse;
 import com.erenes.service.ServerService;
+import io.smallrye.common.annotation.Blocking;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -11,6 +12,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Map;
 
@@ -54,6 +58,8 @@ public class ServerResource {
                         .statusCode(Status.OK.getStatusCode())
                         .build()
                 ).build())
+                .onFailure()
+                .invoke(failure -> {System.err.println(failure);})
                 .onFailure()
                 .recoverWithItem(() -> Response.status(BAD_REQUEST).entity(HttpResponse.newBuilder()
                         .timeStamp(Instant.now().toString())
@@ -127,5 +133,11 @@ public class ServerResource {
                         .status(BAD_REQUEST)
                         .statusCode(BAD_REQUEST.getStatusCode())
                         .build()).build());
+    }
+
+    @GET
+    @Path("image/{fileName}")
+    public byte[] getServerImage(@PathParam("fileName") String fileName) throws IOException {
+        return Files.readAllBytes(Paths.get(System.getProperty("user.home") + "/Downloads/images/" + fileName));
     }
 }
