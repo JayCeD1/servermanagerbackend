@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quarkus-app-deployment
+  labels:
+    app: quarkus-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quarkus-app
+  template:
+    metadata:
+      name: quarkus-app
+      labels:
+        app: quarkus-app
+    spec:
+      containers:
+        - name: quarkus-app
+          image: jayced1/backserverapp:back
+          env:
+            - name: QUARKUS_DATASOURCE_URL
+              value: mysql://mysql-service:3306/server
+            - name: QUARKUS_DATASOURCE_USERNAME
+              value: server
+            - name: QUARKUS_DATASOURCE_PASSWORD
+              value: addidas1
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quarkus-app-service
+spec:
+  selector:
+    app: quarkus-app
+  ports:
+    - protocol: TCP
+      port: 8080

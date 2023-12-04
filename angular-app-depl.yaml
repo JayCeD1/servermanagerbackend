@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: angular-app-deployment
+  labels:
+    app: angular-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: angular-app
+  template:
+    metadata:
+      labels:
+        app: angular-app
+    spec:
+      containers:
+        - name: angular-app
+          image: jayced1/frontserverapp:front
+          env:
+            - name: API_BASE_URL
+              value: "http://quarkus-app-service:8080" # Added quotes to the value
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: angular-app-service
+spec:
+  type: ClusterIP
+  selector:
+    app: angular-app
+  ports:
+    - protocol: TCP
+      port: 80 # Exposing the service on port 80
+      targetPort: 80 # Specify the target port here if the container listens on port 80
