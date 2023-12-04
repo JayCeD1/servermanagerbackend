@@ -1,9 +1,10 @@
 package com.erenes.generals;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.ws.rs.core.Response;
 
 import java.util.Map;
-
+@RegisterForReflection
 public class HttpResponse {
 
     HttpResponse(){}

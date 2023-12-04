@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  backserverapp:
+    build:
+      context: .
+      dockerfile: src/main/docker/Dockerfile.native-micro
+    image: jayced1/backserverapp:back
+    container_name: backserverapp_container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - my_network
+    environment:
+      - QUARKUS_DATASOURCE_URL=mysql://db:3306/server
+      - QUARKUS_DATASOURCE_USERNAME=server
+      - QUARKUS_DATASOURCE_PASSWORD=addidas1
+
+  db:
+    image: mysql:8
+    container_name: server-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: server
+      MYSQL_USER: server
+      MYSQL_PASSWORD: addidas1
+      MYSQL_ROOT_PASSWORD: addidas1
+    ports:
+      - "3306:3306"
+    networks:
+      - my_network
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+networks:
+  my_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
